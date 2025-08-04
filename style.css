@@ -16,6 +16,7 @@ body {
   color: #fff;
   text-align: center;
   padding: 3rem 1rem;
+  position: relative;
 }
 
 .hero h1 {
@@ -38,6 +39,30 @@ body {
 
 .cta-btn:hover {
   background-color: #a98840;
+}
+
+/* Header Actions - Cart & Wishlist */
+.header-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.icon-btn {
+  background: #c4a35a;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+}
+
+.icon-btn:hover {
+  background: #a9873e;
 }
 
 /* Login Bar */
@@ -210,6 +235,12 @@ footer {
   .btn {
     font-size: 0.9rem;
   }
+
+  .header-actions {
+    position: static;
+    justify-content: center;
+    margin-top: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -221,8 +252,16 @@ footer {
     font-size: 1.8rem;
   }
 
-  .cta-btn, .btn {
+  .cta-btn,
+  .btn,
+  .icon-btn {
     font-size: 0.85rem;
     padding: 0.6rem 1rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
 }

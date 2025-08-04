@@ -1,3 +1,4 @@
+
 const products = [
   { id: 1, name: "Lavender Bliss", price: 100, fragrance: "Lavender", image: "https://via.placeholder.com/150?text=Lavender" },
   { id: 2, name: "Vanilla Dream", price: 200, fragrance: "Vanilla", image: "https://via.placeholder.com/150?text=Vanilla" },
