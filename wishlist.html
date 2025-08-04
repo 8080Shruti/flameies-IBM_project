@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Wishlist</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Wishlist</h1>
+    <a href="index.html" class="cta-btn">Back to Shop</a>
+  </header>
+
+  <section class="wishlist-section">
+    <ul id="wishlistItems"></ul>
+  </section>
+
+  <script>
+  const wishlistItems = document.getElementById("wishlistItems");
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+  function renderWishlist() {
+    wishlistItems.innerHTML = '';
+
+    if (wishlist.length === 0) {
+      wishlistItems.innerHTML = '<li>Your wishlist is empty.</li>';
+      return;
+    }
+
+    wishlist.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${item.name} - ₹${item.price}
+        <button class="btn remove" onclick="removeFromWishlist(${index})">Remove</button>
+        <button class="btn" onclick="addToCartFromWishlist(${index})">Add to Cart</button>
+      `;
+      wishlistItems.appendChild(li);
+    });
+  }
+
+  function removeFromWishlist(index) {
+    wishlist.splice(index, 1);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    renderWishlist();
+  }
+
+  function addToCartFromWishlist(index) {
+    const item = wishlist[index];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Prevent duplicate in cart
+    if (!cart.some(p => p.id === item.id)) {
+      cart.push(item);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${item.name} added to cart.`);
+    } else {
+      alert(`${item.name} is already in your cart.`);
+    }
+
+    // Optionally remove from wishlist after adding to cart
+    removeFromWishlist(index);
+  }
+
+  renderWishlist();
+</script>
+
+
+</body>
+</html>

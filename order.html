@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Order Status</h1>
+    <a href="index.html" class="cta-btn">Back to Shop</a>
+  </header>
+
+  <section class="status">
+    <p>Your order has been <strong>delivered successfully!</strong></p>
+    <p>Thank you for shopping with us. 🎉</p>
+  </section>
+
+  <script>
+    localStorage.removeItem("cart"); // clear cart after order
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flameies.com - Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Login Bar -->
+  <div class="login-bar">
+    <span id="loginStatus">Welcome, Guest</span>
+    <button id="loginBtn" class="btn">Login</button>
+    <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+<a href="profile.html" class="cta-btn">Profile</a>
+
+  </div>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <h1>Flameies</h1>
+    <p>Glow Naturally</p>
+    <a href="cart.html" class="cta-btn">Go to Cart</a>
+    <a href="wishlist.html" class="cta-btn">View Wishlist</a>
+  </header>
+
+  <!-- Filter Section -->
+  <section class="filters">
+    <h3>Filter Products</h3>
+
+    <label for="searchInput">Search:</label>
+    <input type="text" id="searchInput" placeholder="Search products..." />
+
+    <label for="fragranceFilter">Fragrance:</label>
+    <select id="fragranceFilter">
+      <option value="all">All</option>
+      <option value="Lavender">Lavender</option>
+      <option value="Vanilla">Vanilla</option>
+      <option value="Rose">Rose</option>
+      <option value="Sandalwood">Sandalwood</option>
+      <option value="Citrus">Citrus</option>
+    </select>
+
+    <label for="priceFilter">Price:</label>
+    <select id="priceFilter">
+      <option value="all">All</option>
+      <option value="low">Below ₹300</option>
+      <option value="high">₹300 and above</option>
+    </select>
+  </section>
+
+  <!-- Product Section -->
+  <section class="products" id="products">
+    <h2>Our Candle Collection</h2>
+    <div class="product-list" id="productList"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Flameies | <a href="order.html">Track Order</a></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const products = [
+      { name: "Lavender Bliss", price: 100, fragrance: "Lavender", image: "images/lavender.jpg" },
+      { name: "Vanilla Dream", price: 200, fragrance: "Vanilla", image: "images/vanilla.jpg" },
+      { name: "Citrus Splash", price: 300, fragrance: "Citrus", image: "images/citrus.jpg" },
+      { name: "Rose Romance", price: 400, fragrance: "Rose", image: "images/rose.jpg" },
+      { name: "Ocean Breeze", price: 500, fragrance: "Sandalwood", image: "images/ocean.jpg" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginBtn = document.getElementById("loginBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const loginStatus = document.getElementById("loginStatus");
+
+      function updateLoginUI() {
+        const user = localStorage.getItem("user");
+        if (user) {
+          loginStatus.textContent = `Welcome, ${user}`;
+          loginBtn.style.display = "none";
+          logoutBtn.style.display = "inline-block";
+        } else {
+          loginStatus.textContent = "Welcome, Guest";
+          loginBtn.style.display = "inline-block";
+          logoutBtn.style.display = "none";
+        }
+      }
+
+      loginBtn.onclick = () => {
+        const name = prompt("Enter your name:");
+        if (name) {
+          localStorage.setItem("user", name);
+          updateLoginUI();
+        }
+      };
+
+      logoutBtn.onclick = () => {
+        localStorage.removeItem("user");
+        updateLoginUI();
+      };
+
+      updateLoginUI();
+
+      // Filter Events
+      document.getElementById("fragranceFilter").addEventListener("change", filterAndRender);
+      document.getElementById("priceFilter").addEventListener("change", filterAndRender);
+      document.getElementById("searchInput").addEventListener("input", filterAndRender);
+
+      renderProducts(products); // Initial render
+    });
+
+    function renderProducts(list) {
+      const productList = document.getElementById("productList");
+      productList.innerHTML = "";
+
+      if (list.length === 0) {
+        productList.innerHTML = "<p>No products found.</p>";
+        return;
+      }
+
+      list.forEach(product => {
+        const div = document.createElement("div");
+        div.classList.add("product");
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>Price: ₹${product.price}</p>
+          <button class="btn" onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+          <button class="btn" onclick="addToWishlist('${product.name}', ${product.price})">Add to Wishlist</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function filterAndRender() {
+      const fragrance = document.getElementById("fragranceFilter").value;
+      const price = document.getElementById("priceFilter").value;
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+
+      let filtered = [...products];
+
+      if (fragrance !== "all") {
+        filtered = filtered.filter(p => p.fragrance === fragrance);
+      }
+
+      if (price === "low") {
+        filtered = filtered.filter(p => p.price < 300);
+      } else if (price === "high") {
+        filtered = filtered.filter(p => p.price >= 300);
+      }
+
+      if (searchTerm) {
+        filtered = filtered.filter(p =>
+          p.name.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      renderProducts(filtered);
+    }
+
+    function addToCart(name, price) {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const exists = cart.some(item => item.name === name);
+      if (!exists) {
+        cart.push({ name, price });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(`${name} added to cart.`);
+      } else {
+        alert(`${name} is already in the cart.`);
+      }
+    }
+
+    function addToWishlist(name, price) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      const exists = wishlist.some(item => item.name === name);
+      if (!exists) {
+        wishlist.push({ name, price });
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        alert(`${name} added to wishlist.`);
+      } else {
+        alert(`${name} is already in the wishlist.`);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Your Cart</h1>
+    <a href="index.html" class="cta-btn">Back to Shop</a>
+  </header>
+
+  <section class="cart-section">
+    <ul id="cartItems"></ul>
+    <p>Total: ₹<span id="cartTotal">0</span></p>
+    <button class="btn" onclick="placeOrder()">Place Order</button>
+  </section>
+
+  <script>
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = 0;
+
+    function renderCart() {
+      cartItems.innerHTML = '';
+      total = 0;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = "<li>Your cart is empty.</li>";
+        cartTotal.textContent = "0";
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${item.name} - ₹${item.price}
+          <button onclick="removeFromCart(${index})" class="btn" style="margin-left: 10px;">Remove</button>
+        `;
+        cartItems.appendChild(li);
+        total += item.price;
+      });
+
+      cartTotal.textContent = total;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+      const newOrder = {
+        id: "ORD" + Date.now(),
+        date: new Date().toLocaleString(),
+        items: cart
+      };
+
+      orders.push(newOrder);
+      localStorage.setItem("orders", JSON.stringify(orders));
+
+      // Clear cart
+      localStorage.removeItem("cart");
+      alert("Order placed successfully!");
+
+      window.location.href = "profile.html"; // Redirect to profile
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
