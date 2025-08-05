@@ -153,3 +153,54 @@ function updateLoginUI() {
     }
   }
 }
+
+// Save address to localStorage
+function saveAddress() {
+  const address = document.getElementById("addressInput").value.trim();
+  if (!address) {
+    alert("Please enter a valid address.");
+    return;
+  }
+  localStorage.setItem("deliveryAddress", address);
+  alert("Address saved successfully!");
+}
+
+// Retrieve address
+function getSavedAddress() {
+  return localStorage.getItem("deliveryAddress") || "";
+}
+
+// Check if address exists
+function isAddressSaved() {
+  return getSavedAddress() !== "";
+}
+
+// Pre-fill the address if already saved
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = getSavedAddress();
+  const addressInput = document.getElementById("addressInput");
+  if (addressInput && saved) {
+    addressInput.value = saved;
+  }
+});
+
+function trackProduct(name, image) {
+  if (!isAddressSaved()) {
+    alert("Please enter and save your delivery address before ordering.");
+    // Scroll to address section
+    document.getElementById("addressSection").scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+
+  const orderDetails = {
+    id: `ORD${Date.now()}`,
+    name,
+    image,
+    address: getSavedAddress(),
+    delivery: generateDeliveryDate(), // you already have this function
+    status: "Shipped"
+  };
+
+  localStorage.setItem("currentOrder", JSON.stringify(orderDetails));
+  window.location.href = "order.html"; // or wherever you're redirecting
+}
