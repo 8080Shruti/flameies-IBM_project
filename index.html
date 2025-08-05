@@ -6,6 +6,43 @@
   <title>Flameies.com - Home</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    .login-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #eee;
+      padding: 0.5rem 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .login-left {
+      font-weight: 600;
+    }
+
+    .login-right {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .login-bar .btn,
+    .login-bar .cta-btn {
+      background: #444;
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-bar .btn:hover,
+    .login-bar .cta-btn:hover {
+      background: #222;
+    }
+
     .auth-modal {
       display: none;
       position: fixed;
@@ -72,12 +109,18 @@
 </head>
 <body>
 
-  <!-- Login Bar -->
+  <!-- Navigation/Login Bar -->
   <div class="login-bar">
-    <span id="loginStatus">Welcome, Guest</span>
-    <button id="loginRegisterBtn" class="btn">Register / Login</button>
-    <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
-    <a href="profile.html" class="cta-btn" id="profileLink" style="display: none;">Profile</a>
+    <div class="login-left">
+      <span id="loginStatus">Welcome, Guest</span>
+    </div>
+    <div class="login-right">
+      <button id="loginRegisterBtn" class="btn">Register / Login</button>
+      <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+      <a href="profile.html" class="cta-btn" id="profileLink" style="display: none;">Profile</a>
+      <a href="wishlist.html" class="cta-btn">Wishlist</a>
+      <a href="cart.html" class="cta-btn">Cart</a>
+    </div>
   </div>
 
   <!-- Auth Modal -->
@@ -102,8 +145,6 @@
   <header class="hero">
     <h1>Flameies</h1>
     <p>Glow Naturally</p>
-    <a href="cart.html" class="cta-btn">Go to Cart</a>
-    <a href="wishlist.html" class="cta-btn">View Wishlist</a>
   </header>
 
   <!-- Filter Section -->
