@@ -25,6 +25,10 @@
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let total = 0;
 
+    function isUserLoggedIn() {
+      return localStorage.getItem("user") !== null;
+    }
+
     function renderCart() {
       cartItems.innerHTML = '';
       total = 0;
@@ -55,6 +59,11 @@
     }
 
     function placeOrder() {
+      if (!isUserLoggedIn()) {
+        alert("Please log in to place an order.");
+        return;
+      }
+
       if (cart.length === 0) {
         alert("Your cart is empty.");
         return;

@@ -2,19 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flameies.com - Home</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .auth-modal.active {
+      display: flex;
+    }
+
+    .auth-box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      position: relative;
+    }
+
+    .auth-box h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .auth-box label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    .auth-box input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+    }
+
+    .auth-box button {
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .switch-link {
+      margin-top: 1rem;
+      text-align: center;
+      cursor: pointer;
+      color: #c4a35a;
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #888;
+    }
+  </style>
 </head>
 <body>
 
   <!-- Login Bar -->
   <div class="login-bar">
     <span id="loginStatus">Welcome, Guest</span>
-    <button id="loginBtn" class="btn">Login</button>
+    <button id="loginRegisterBtn" class="btn">Register / Login</button>
     <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
-<a href="profile.html" class="cta-btn">Profile</a>
+    <a href="profile.html" class="cta-btn" id="profileLink" style="display: none;">Profile</a>
+  </div>
 
+  <!-- Auth Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-box">
+      <span class="close-modal" onclick="closeAuthModal()">×</span>
+      <h2 id="authTitle">Register</h2>
+      <form id="authForm" onsubmit="handleAuth(event)">
+        <label for="name">Name</label>
+        <input type="text" id="name" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+
+        <button type="submit" class="btn">Submit</button>
+        <div class="switch-link" onclick="toggleAuthMode()">Already have an account? Login</div>
+      </form>
+    </div>
   </div>
 
   <!-- Hero Section -->
@@ -26,28 +107,34 @@
   </header>
 
   <!-- Filter Section -->
-  <section class="filters">
-    <h3>Filter Products</h3>
+  <section class="filter-section">
+    <h2>Filter Products</h2>
 
-    <label for="searchInput">Search:</label>
-    <input type="text" id="searchInput" placeholder="Search products..." />
+    <div class="filter-group">
+      <label for="searchInput">Search</label>
+      <input type="text" id="searchInput" placeholder="Search products..." />
+    </div>
 
-    <label for="fragranceFilter">Fragrance:</label>
-    <select id="fragranceFilter">
-      <option value="all">All</option>
-      <option value="Lavender">Lavender</option>
-      <option value="Vanilla">Vanilla</option>
-      <option value="Rose">Rose</option>
-      <option value="Sandalwood">Sandalwood</option>
-      <option value="Citrus">Citrus</option>
-    </select>
+    <div class="filter-group">
+      <label for="fragranceFilter">Fragrance</label>
+      <select id="fragranceFilter">
+        <option value="all">All</option>
+        <option value="Lavender">Lavender</option>
+        <option value="Vanilla">Vanilla</option>
+        <option value="Rose">Rose</option>
+        <option value="Sandalwood">Sandalwood</option>
+        <option value="Citrus">Citrus</option>
+      </select>
+    </div>
 
-    <label for="priceFilter">Price:</label>
-    <select id="priceFilter">
-      <option value="all">All</option>
-      <option value="low">Below ₹300</option>
-      <option value="high">₹300 and above</option>
-    </select>
+    <div class="filter-group">
+      <label for="priceFilter">Price</label>
+      <select id="priceFilter">
+        <option value="all">All</option>
+        <option value="low">Below ₹300</option>
+        <option value="high">₹300 and above</option>
+      </select>
+    </div>
   </section>
 
   <!-- Product Section -->
@@ -71,51 +158,112 @@
       { name: "Ocean Breeze", price: 500, fragrance: "Sandalwood", image: "images/ocean.jpg" }
     ];
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const loginBtn = document.getElementById("loginBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const loginStatus = document.getElementById("loginStatus");
+    let isLoginMode = false;
 
-      function updateLoginUI() {
-        const user = localStorage.getItem("user");
-        if (user) {
-          loginStatus.textContent = `Welcome, ${user}`;
-          loginBtn.style.display = "none";
-          logoutBtn.style.display = "inline-block";
-        } else {
-          loginStatus.textContent = "Welcome, Guest";
-          loginBtn.style.display = "inline-block";
-          logoutBtn.style.display = "none";
-        }
+    function openAuthModal() {
+      document.getElementById('authModal').classList.add('active');
+      updateAuthMode();
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('active');
+      document.getElementById('authForm').reset();
+    }
+
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      updateAuthMode();
+    }
+
+    function updateAuthMode() {
+      document.getElementById('authTitle').innerText = isLoginMode ? 'Login' : 'Register';
+      document.querySelector('.switch-link').innerText = isLoginMode
+        ? "Don't have an account? Register"
+        : "Already have an account? Login";
+    }
+
+    function handleAuth(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+
+      if (isLoginMode) {
+        const user = users.find(u => u.name === name && u.password === password);
+        if (!user) return alert("Invalid login credentials.");
+        localStorage.setItem("user", JSON.stringify(user));
+        alert(`Welcome back, ${user.name}`);
+      } else {
+        if (users.some(u => u.name === name)) return alert("User already exists.");
+        const newUser = { name, password };
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("user", JSON.stringify(newUser));
+        alert("Registration successful.");
       }
 
-      loginBtn.onclick = () => {
-        const name = prompt("Enter your name:");
-        if (name) {
-          localStorage.setItem("user", name);
-          updateLoginUI();
-        }
-      };
-
-      logoutBtn.onclick = () => {
-        localStorage.removeItem("user");
-        updateLoginUI();
-      };
-
+      closeAuthModal();
       updateLoginUI();
+    }
 
-      // Filter Events
-      document.getElementById("fragranceFilter").addEventListener("change", filterAndRender);
-      document.getElementById("priceFilter").addEventListener("change", filterAndRender);
-      document.getElementById("searchInput").addEventListener("input", filterAndRender);
+    function updateLoginUI() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const loginStatus = document.getElementById("loginStatus");
+      const loginRegisterBtn = document.getElementById("loginRegisterBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const profileLink = document.getElementById("profileLink");
 
-      renderProducts(products); // Initial render
-    });
+      if (user) {
+        loginStatus.textContent = `Welcome, ${user.name}`;
+        loginRegisterBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        profileLink.style.display = "inline-block";
+      } else {
+        loginStatus.textContent = "Welcome, Guest";
+        loginRegisterBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        profileLink.style.display = "none";
+      }
+    }
+
+    function checkLoginBeforeAction() {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        alert("Please login first.");
+        openAuthModal();
+        return false;
+      }
+      return true;
+    }
+
+    function addToCart(name, price) {
+      if (!checkLoginBeforeAction()) return;
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (!cart.some(item => item.name === name)) {
+        cart.push({ name, price });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(`${name} added to cart.`);
+      } else {
+        alert(`${name} is already in the cart.`);
+      }
+    }
+
+    function addToWishlist(name, price) {
+      if (!checkLoginBeforeAction()) return;
+      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      if (!wishlist.some(item => item.name === name)) {
+        wishlist.push({ name, price });
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        alert(`${name} added to wishlist.`);
+      } else {
+        alert(`${name} is already in the wishlist.`);
+      }
+    }
 
     function renderProducts(list) {
       const productList = document.getElementById("productList");
       productList.innerHTML = "";
-
       if (list.length === 0) {
         productList.innerHTML = "<p>No products found.</p>";
         return;
@@ -153,37 +301,27 @@
       }
 
       if (searchTerm) {
-        filtered = filtered.filter(p =>
-          p.name.toLowerCase().includes(searchTerm)
-        );
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
       }
 
       renderProducts(filtered);
     }
 
-    function addToCart(name, price) {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const exists = cart.some(item => item.name === name);
-      if (!exists) {
-        cart.push({ name, price });
-        localStorage.setItem("cart", JSON.stringify(cart));
-        alert(`${name} added to cart.`);
-      } else {
-        alert(`${name} is already in the cart.`);
-      }
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("loginRegisterBtn").addEventListener("click", openAuthModal);
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        updateLoginUI();
+      });
 
-    function addToWishlist(name, price) {
-      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-      const exists = wishlist.some(item => item.name === name);
-      if (!exists) {
-        wishlist.push({ name, price });
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        alert(`${name} added to wishlist.`);
-      } else {
-        alert(`${name} is already in the wishlist.`);
-      }
-    }
+      document.getElementById("fragranceFilter").addEventListener("change", filterAndRender);
+      document.getElementById("priceFilter").addEventListener("change", filterAndRender);
+      document.getElementById("searchInput").addEventListener("input", filterAndRender);
+
+      updateLoginUI();
+      renderProducts(products);
+    });
   </script>
+
 </body>
 </html>

@@ -1,97 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile - Flameies</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="hero">
-    <h1>User Profile</h1>
-    <a href="index.html" class="cta-btn">Home</a>
-    <button id="logoutBtn" class="btn">Logout</button>
+    <h1>Order Status</h1>
+    <a href="index.html" class="cta-btn">Back to Shop</a>
   </header>
 
-  <section class="profile-info">
-    <h2>Welcome, <span id="username">Guest</span></h2>
-  </section>
-
-  <section class="profile-section">
-    <h3>Your Orders</h3>
-    <div id="orders"></div>
-  </section>
-
-  <section class="profile-section">
-    <h3>Your Wishlist</h3>
-    <div id="wishlist"></div>
-  </section>
-
-  <section class="profile-section">
-    <h3>Your Cart</h3>
-    <div id="cart"></div>
+  <section class="status">
+    <p>Your order has been <strong>delivered successfully!</strong></p>
+    <p>Thank you for shopping with us. 🎉</p>
   </section>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const usernameSpan = document.getElementById("username");
-      const logoutBtn = document.getElementById("logoutBtn");
-
-      const user = localStorage.getItem("user");
-      if (user) {
-        usernameSpan.textContent = user;
-      }
-
-      logoutBtn.onclick = () => {
-        localStorage.removeItem("user");
-        window.location.href = "index.html";
-      };
-
-      renderSection("orders", "orders", false);
-      renderSection("wishlist", "wishlist", true);
-      renderSection("cart", "cart", true);
-    });
-
-    function renderSection(containerId, storageKey, showButtons) {
-      const container = document.getElementById(containerId);
-      const items = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-      if (items.length === 0) {
-        container.innerHTML = `<p>No ${storageKey} items found.</p>`;
-        return;
-      }
-
-      container.innerHTML = "";
-      items.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-          <h4>${item.name}</h4>
-          <p>Price: ₹${item.price}</p>
-          ${showButtons ? `<button onclick="removeItem('${storageKey}', ${index})">Remove</button>` : ""}
-          ${storageKey === 'wishlist' ? `<button onclick="moveToCart(${index})">Move to Cart</button>` : ""}
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function removeItem(key, index) {
-      const list = JSON.parse(localStorage.getItem(key)) || [];
-      list.splice(index, 1);
-      localStorage.setItem(key, JSON.stringify(list));
-      renderSection(key, key, true);
-    }
-
-    function moveToCart(index) {
-      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const item = wishlist.splice(index, 1)[0];
-      cart.push(item);
-      localStorage.setItem("wishlist", JSON.stringify(wishlist));
-      localStorage.setItem("cart", JSON.stringify(cart));
-      renderSection("wishlist", "wishlist", true);
-      renderSection("cart", "cart", true);
-    }
+    localStorage.removeItem("cart"); // clear cart after order
   </script>
 </body>
 </html>

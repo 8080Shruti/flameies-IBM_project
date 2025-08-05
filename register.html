@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register / Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-container {
+      max-width: 400px;
+      margin: 3rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .auth-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .auth-container input {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .auth-container button {
+      width: 100%;
+    }
+    .toggle-mode {
+      text-align: center;
+      margin-top: 1rem;
+      cursor: pointer;
+      color: #555;
+    }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      color: #c00;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="formTitle">Register</h2>
+    
+    <input type="text" id="name" placeholder="Your Name" required />
+    <input type="email" id="email" placeholder="Email Address" required />
+    <input type="password" id="password" placeholder="Password" required />
+    
+    <button class="btn" onclick="handleAuth()">Continue</button>
+    <p class="toggle-mode" onclick="toggleMode()">Already have an account? Login</p>
+    <p class="message" id="message"></p>
+  </div>
+
+  <script>
+    let isLogin = false;
+
+    function toggleMode() {
+      isLogin = !isLogin;
+
+      document.getElementById("formTitle").textContent = isLogin ? "Login" : "Register";
+      document.querySelector(".toggle-mode").textContent = isLogin
+        ? "New user? Register"
+        : "Already have an account? Login";
+
+      document.getElementById("email").style.display = isLogin ? "none" : "block";
+    }
+
+    function handleAuth() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
+
+      if (!name || !password || (!isLogin && !email)) {
+        message.textContent = "Please fill in all required fields.";
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      if (isLogin) {
+        // Login mode: match by name + password
+        const existingUser = users.find(u => u.name === name && u.password === password);
+        if (existingUser) {
+          localStorage.setItem("user", JSON.stringify(existingUser));
+          alert("Login successful!");
+          window.location.href = "index.html";
+        } else {
+          message.textContent = "Name or password incorrect.";
+        }
+      } else {
+        // Register mode: check name uniqueness
+        const userExists = users.some(u => u.name === name);
+        if (userExists) {
+          message.textContent = "Name already taken. Try a different one.";
+          return;
+        }
+
+        const newUser = { name, email, password };
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("user", JSON.stringify(newUser));
+        alert("Registration successful!");
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+
+</body>
+</html>

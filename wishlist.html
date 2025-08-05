@@ -14,57 +14,78 @@
 
   <section class="wishlist-section">
     <ul id="wishlistItems"></ul>
+    <p id="wishlistMessage" style="margin-top: 1rem;"></p>
   </section>
 
   <script>
-  const wishlistItems = document.getElementById("wishlistItems");
-  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlistItems = document.getElementById("wishlistItems");
+    const wishlistMessage = document.getElementById("wishlistMessage");
 
-  function renderWishlist() {
-    wishlistItems.innerHTML = '';
-
-    if (wishlist.length === 0) {
-      wishlistItems.innerHTML = '<li>Your wishlist is empty.</li>';
-      return;
+    function isUserLoggedIn() {
+      return localStorage.getItem("user") !== null;
     }
 
-    wishlist.forEach((item, index) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        ${item.name} - ₹${item.price}
-        <button class="btn remove" onclick="removeFromWishlist(${index})">Remove</button>
-        <button class="btn" onclick="addToCartFromWishlist(${index})">Add to Cart</button>
-      `;
-      wishlistItems.appendChild(li);
-    });
-  }
+    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-  function removeFromWishlist(index) {
-    wishlist.splice(index, 1);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    function renderWishlist() {
+      wishlistItems.innerHTML = '';
+      wishlistMessage.textContent = '';
+
+      // Check login
+      if (!isUserLoggedIn()) {
+        wishlistMessage.innerHTML = `
+          Please <a href="register.html" style="color:#c4a35a;">register</a> or log in to view your wishlist.
+        `;
+        return;
+      }
+
+      if (wishlist.length === 0) {
+        wishlistItems.innerHTML = '<li>Your wishlist is empty.</li>';
+        return;
+      }
+
+      wishlist.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${item.name} - ₹${item.price}
+          <button class="btn remove" onclick="removeFromWishlist(${index})">Remove</button>
+          <button class="btn" onclick="addToCartFromWishlist(${index})">Add to Cart</button>
+        `;
+        wishlistItems.appendChild(li);
+      });
+    }
+
+    function removeFromWishlist(index) {
+      wishlist.splice(index, 1);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      renderWishlist();
+    }
+
+    function addToCartFromWishlist(index) {
+      const item = wishlist[index];
+
+      if (!isUserLoggedIn()) {
+        alert("Please register or log in before adding items to cart.");
+        window.location.href = "register.html";
+        return;
+      }
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      // Avoid duplicates
+      if (!cart.some(p => p.id === item.id)) {
+        cart.push(item);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(`${item.name} added to cart.`);
+      } else {
+        alert(`${item.name} is already in your cart.`);
+      }
+
+      // Optionally remove from wishlist after adding to cart
+      removeFromWishlist(index);
+    }
+
     renderWishlist();
-  }
-
-  function addToCartFromWishlist(index) {
-    const item = wishlist[index];
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    // Prevent duplicate in cart
-    if (!cart.some(p => p.id === item.id)) {
-      cart.push(item);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert(`${item.name} added to cart.`);
-    } else {
-      alert(`${item.name} is already in your cart.`);
-    }
-
-    // Optionally remove from wishlist after adding to cart
-    removeFromWishlist(index);
-  }
-
-  renderWishlist();
-</script>
-
-
+  </script>
 </body>
 </html>

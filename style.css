@@ -41,30 +41,6 @@ body {
   background-color: #a98840;
 }
 
-/* Header Actions - Cart & Wishlist */
-.header-actions {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.icon-btn {
-  background: #c4a35a;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.95rem;
-  transition: background 0.3s ease;
-}
-
-.icon-btn:hover {
-  background: #a9873e;
-}
-
 /* Login Bar */
 .login-bar {
   display: flex;
@@ -157,7 +133,7 @@ body {
   background: #444;
 }
 
-/* Cart & Wishlist */
+/* Cart, Wishlist, Profile, Order Sections */
 .cart-section,
 .wishlist-section,
 .order-section,
@@ -205,6 +181,55 @@ footer {
   color: #fff;
 }
 
+/* Registration Form */
+.registration-form {
+  max-width: 500px;
+  margin: 3rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.registration-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1e1e1e;
+}
+
+.registration-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.registration-form input,
+.registration-form select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.registration-form button {
+  width: 100%;
+  background: #c4a35a;
+  color: white;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.registration-form button:hover {
+  background: #a98840;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .product {
@@ -235,12 +260,6 @@ footer {
   .btn {
     font-size: 0.9rem;
   }
-
-  .header-actions {
-    position: static;
-    justify-content: center;
-    margin-top: 1rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -253,15 +272,81 @@ footer {
   }
 
   .cta-btn,
-  .btn,
-  .icon-btn {
+  .btn {
     font-size: 0.85rem;
     padding: 0.6rem 1rem;
   }
-
-  .header-actions {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
 }
+
+/* Auth Modal */
+.auth-modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-modal.active {
+  display: flex;
+}
+
+.auth-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+}
+
+.auth-box h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-box label {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.auth-box input {
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.auth-box .switch-link {
+  margin-top: 1rem;
+  text-align: center;
+  cursor: pointer;
+  color: #c4a35a;
+  font-weight: bold;
+}
+
+.auth-box button {
+  margin-top: 1.5rem;
+}
+
+.close-modal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+}
+

@@ -1,4 +1,3 @@
-
 const products = [
   { id: 1, name: "Lavender Bliss", price: 100, fragrance: "Lavender", image: "https://via.placeholder.com/150?text=Lavender" },
   { id: 2, name: "Vanilla Dream", price: 200, fragrance: "Vanilla", image: "https://via.placeholder.com/150?text=Vanilla" },
@@ -48,6 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Check if user is logged in
+function isUserLoggedIn() {
+  return localStorage.getItem("user") !== null;
+}
+
 // Function to render products
 function renderProducts(list) {
   const container = document.getElementById("productList");
@@ -94,8 +98,13 @@ function filterAndRender() {
   renderProducts(filtered);
 }
 
-// Add to Cart
+// Add to Cart (with login check)
 function addToCart(id) {
+  if (!isUserLoggedIn()) {
+    alert("Please log in or register to add items to your cart.");
+    return;
+  }
+
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const product = products.find(p => p.id === id);
   if (!cart.some(p => p.id === id)) {
@@ -107,8 +116,13 @@ function addToCart(id) {
   }
 }
 
-// Add to Wishlist
+// Add to Wishlist (with login check)
 function addToWishlist(id) {
+  if (!isUserLoggedIn()) {
+    alert("Please log in or register to add items to your wishlist.");
+    return;
+  }
+
   const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   const product = products.find(p => p.id === id);
   if (!wishlist.some(p => p.id === id)) {
